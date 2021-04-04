@@ -2,6 +2,7 @@
 import User from '../models/users.js';
 import auth from '../auth.js';
 import express from 'express';
+import cors from './cors.js';
 
 var userRouter = express.Router();
 
@@ -14,8 +15,11 @@ userRouter.post('/register',function(req,res){
         if(user) return res.status(400).json({ auth : false, message :"email exits"});
  
         newuser.save((err,doc)=>{
-            if(err) {console.log(err);
-                return res.status(400).json({ success : false});}
+            if(err) 
+            {
+                console.log(err);
+                return res.status(400).json({ success : false});
+            }
             res.status(200).json({
                 succes:true,
                 user : doc
@@ -61,7 +65,6 @@ userRouter.get('/profile',auth,function(req,res){
         email: req.user.email,
         name: req.user.name,
         recruiter: req.user.recruiter
-        
     })
 });
 

@@ -3,8 +3,36 @@ import express from 'express';
 import auth from '../auth.js'
 import userRouter from './userRouter.js';
 import Applications from '../models/applications.js'
+import cors from './cors.js';
 
 var jobRouter = express.Router();
+jobRouter.route('/')
+.get(auth,function(req,res,next){
+    if(req.user.recruiter){
+    Jobs.find({recruiter:req.user._id})
+    .then((jobs) => {
+        res.statusCode = 200;
+        res.set({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://localhost:3000",
+            "Access-Control-Allow-Credentials":true
+        });
+        res.json(jobs);
+
+    }, (err) => next(err))
+    .catch((err) => next(err));
+} else{
+    Jobs.find(req.query)
+    .populate('recruiter')
+    .then((jobs) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(jobs);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+}
+}
+)
 
 jobRouter.post('/',auth,function(req,res,next){
     console.log("ddd")
@@ -45,27 +73,7 @@ jobRouter.post('/',auth,function(req,res,next){
 }
 )
 
-jobRouter.get('/',auth,function(req,res,next){
-    if(req.user.recruiter){
-    Jobs.find({recruiter:req.user._id})
-    .then((jobs) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(jobs);
-    }, (err) => next(err))
-    .catch((err) => next(err));
-} else{
-    Jobs.find(req.query)
-    .populate('recruiter')
-    .then((jobs) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(jobs);
-    }, (err) => next(err))
-    .catch((err) => next(err));
-}
-}
-)
+
 
 jobRouter.get('/applied',auth,(req,res,next)=>{
     if(!req.user.recruiter){
