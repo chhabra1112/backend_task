@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 // Routers
 import userRouter from './routes/userRouter.js';
 import jobRouter from './routes/jobsRouter.js'
+import indexRouter from './routes/indexRouter.js'
 
 // app config
 const app = express();
@@ -46,8 +47,7 @@ mongoose.connect(config.mongo_url,{
 
 
 // api routes
-// app.use('/', indexRouter);
-// app.use('/messages', messageRouter);
+app.use('/', indexRouter);
 app.use('/user',userRouter);
 app.use('/jobs',jobRouter);
 

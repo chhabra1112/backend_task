@@ -2,7 +2,6 @@
 import User from '../models/users.js';
 import auth from '../auth.js';
 import express from 'express';
-import cors from './cors.js';
 
 var userRouter = express.Router();
 

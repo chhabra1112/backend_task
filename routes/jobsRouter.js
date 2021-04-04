@@ -3,7 +3,6 @@ import express from 'express';
 import auth from '../auth.js'
 import userRouter from './userRouter.js';
 import Applications from '../models/applications.js'
-import cors from './cors.js';
 
 var jobRouter = express.Router();
 jobRouter.route('/')
