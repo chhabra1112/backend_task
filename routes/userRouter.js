@@ -32,6 +32,12 @@ userRouter.post('/register',function(req,res){
 
  userRouter.route('/login')
  .post(function(req,res){
+    res.header("Access-Control-Allow-Origin", "https://getajob-frontend.herokuapp.com");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     let token=req.cookies.auth;
     User.findByToken(token,(err,user)=>{
         if(err) return  res(err);
