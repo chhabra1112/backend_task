@@ -2,6 +2,7 @@
 import User from '../models/users.js';
 import auth from '../auth.js';
 import express from 'express';
+import originUrl from './origin.js';
 
 var userRouter = express.Router();
 
@@ -21,13 +22,16 @@ userRouter.post('/register',function(req,res){
             }
             res.status(200).json({
                 succes:true,
-                user : doc
+                user : doc,
+                isAuth:true,
+                recruiter:doc.recruiter
             });
         });
     });
  });
 
- userRouter.post('/login', function(req,res){
+ userRouter.route('/login')
+ .post(function(req,res){
     let token=req.cookies.auth;
     User.findByToken(token,(err,user)=>{
         if(err) return  res(err);
@@ -47,7 +51,8 @@ userRouter.post('/register',function(req,res){
                     if(err) return res.status(400).send(err);
                     res.cookie('auth',user.token).json({
                         isAuth : true,
-                        id : user._id
+                        id : user._id,
+                        recruiter:user.recruiter
                         ,email : user.email
                     });
                 });    
@@ -58,6 +63,12 @@ userRouter.post('/register',function(req,res){
 });
 
 userRouter.get('/profile',auth,function(req,res){
+    if(!req.user){
+        res.json({
+            isAuth: false,
+            error:"You are not logged in"
+        })
+    }
     res.json({
         isAuth: true,
         id: req.user._id,

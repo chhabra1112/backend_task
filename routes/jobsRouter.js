@@ -2,18 +2,26 @@ import Jobs from '../models/jobs.js';
 import express from 'express';
 import auth from '../auth.js'
 import userRouter from './userRouter.js';
-import Applications from '../models/applications.js'
+import Applications from '../models/applications.js';
+import originUrl from './origin.js';
 
 var jobRouter = express.Router();
 jobRouter.route('/')
 .get(auth,function(req,res,next){
     if(req.user.recruiter){
-    Jobs.find({recruiter:req.user._id})
+    Jobs.find({hr:req.user._id})
     .then((jobs) => {
+        
+
+
+
+
+
+
         res.statusCode = 200;
         res.set({
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "http://localhost:3000",
+            "Access-Control-Allow-Origin": originUrl,
             "Access-Control-Allow-Credentials":true
         });
         res.json(jobs);
@@ -22,7 +30,7 @@ jobRouter.route('/')
     .catch((err) => next(err));
 } else{
     Jobs.find(req.query)
-    .populate('recruiter')
+    .populate('hr')
     .then((jobs) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -44,7 +52,7 @@ jobRouter.post('/',auth,function(req,res,next){
     else{
     if(req.user.recruiter){
         if (req.body != null) {
-            req.body.recruiter = req.user._id;
+            req.body.hr = req.user._id;
             req.body.seekers = [];
             Jobs.create(req.body)
                 .then((job) => {
@@ -52,7 +60,11 @@ jobRouter.post('/',auth,function(req,res,next){
                         .populate('recruiter')
                     .then((job) => {
                         res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
+                        res.set({
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": originUrl,
+                            "Access-Control-Allow-Credentials":true
+                        });
                         res.json(job);
                     })
                 }, (err) => next(err))
@@ -80,7 +92,11 @@ jobRouter.get('/applied',auth,(req,res,next)=>{
             .populate('job_id')
                 .then((applications) => {
                         res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
+                        res.set({
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": originUrl,
+                            "Access-Control-Allow-Credentials":true
+                        });
                         res.json(applications);
                 }, (err) => next(err))
                 .catch((err) => next(err))
@@ -103,7 +119,11 @@ jobRouter.post('/:jobId',auth,(req,res,next)=>{
                     .populate('job_id')
                     .then(applications=>{
                         res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
+                        res.set({
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": originUrl,
+                            "Access-Control-Allow-Credentials":true
+                        });
                         res.json(applications);
                 })}, (err) => next(err))
                 .catch((err) => next(err))
@@ -118,12 +138,25 @@ jobRouter.post('/:jobId',auth,(req,res,next)=>{
 
 jobRouter.get('/:jobId',auth,(req,res,next)=>{
     if(req.user.recruiter){
+        let data = []
             Applications.find({job_id:req.params.jobId})
             .populate('seeker')
                 .then((applications) => {
+                    
+                    applications.forEach(
+                        (application)=>{
+                            
+                            data=data.concat(application.seeker)
+                        }
+                    )
+                    console.log(data);
                         res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(applications);
+                        res.set({
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": originUrl,
+                            "Access-Control-Allow-Credentials":true
+                        });
+                        res.json(data);
                 }, (err) => next(err))
                 .catch((err) => next(err))
 }else{

@@ -4,7 +4,7 @@ const jobSchema = mongoose.Schema({
     company:String,
     jp:String,
     jd:String,
-    recruiter:{
+    hr:{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }
