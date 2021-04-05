@@ -61,7 +61,7 @@ userRouter.post('/register',function(req,res){
         
                 user.generateToken((err,user)=>{
                     if(err) return res.status(400).send(err);
-                    res.cookie('auth',user.token,{sameSite:'none'}).json({
+                    res.cookie('auth',user.token,{sameSite:'none',secure:true}).json({
                         isAuth : true,
                         id : user._id,
                         recruiter:user.recruiter
