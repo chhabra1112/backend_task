@@ -69,6 +69,12 @@ userRouter.post('/register',function(req,res){
 });
 
 userRouter.get('/profile',auth,function(req,res){
+    res.header("Access-Control-Allow-Origin", "https://getajob-frontend.herokuapp.com");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+    );
     if(!req.user){
         res.json({
             isAuth: false,
