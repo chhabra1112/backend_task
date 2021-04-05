@@ -11,13 +11,6 @@ jobRouter.route('/')
     if(req.user.recruiter){
     Jobs.find({hr:req.user._id})
     .then((jobs) => {
-        
-
-
-
-
-
-
         res.statusCode = 200;
         res.set({
             "Content-Type": "application/json",
@@ -111,22 +104,23 @@ jobRouter.get('/applied',auth,(req,res,next)=>{
 
 jobRouter.post('/:jobId',auth,(req,res,next)=>{
     if(!req.user.recruiter){
-            Applications.create({job_id:req.params.jobId,
-                seeker:req.user._id})
-                .then((applications) => {
-                    Applications.find({seeker:req.user._id})
-                    .populate('seekers')
-                    .populate('job_id')
-                    .then(applications=>{
-                        res.statusCode = 200;
-                        res.set({
-                            "Content-Type": "application/json",
-                            "Access-Control-Allow-Origin": originUrl,
-                            "Access-Control-Allow-Credentials":true
-                        });
-                        res.json(applications);
-                })}, (err) => next(err))
-                .catch((err) => next(err))
+        const field = new Applications({job_id:req.params.jobId,seeker:req.user._id});
+        Applications.findOne({job_id:req.params.jobId,seeker:req.user._id},function(err,application){
+            if(application) return res.status(400).json({ auth : false, message :"already applied"});
+            field.save((err,doc)=>{
+                if(err) 
+                {console.log(err);
+                return res.status(400).json({ success : false});
+                }
+                res.statusCode = 200;
+                res.set({
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": originUrl,
+                    "Access-Control-Allow-Credentials":true
+                });
+                res.json(doc);
+            })
+        })      
 }else{
     return res.status(400).json({
         error :true,

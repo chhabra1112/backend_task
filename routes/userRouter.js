@@ -32,7 +32,7 @@ userRouter.post('/register',function(req,res){
 
  userRouter.route('/login')
  .post(function(req,res){
-    res.header("Access-Control-Allow-Origin", "https://getajob-frontend.herokuapp.com");
+    res.header("Access-Control-Allow-Origin", originUrl);
     res.header("Access-Control-Allow-Credentials", true);
     res.header(
       "Access-Control-Allow-Headers",
@@ -69,7 +69,7 @@ userRouter.post('/register',function(req,res){
 });
 
 userRouter.get('/profile',auth,function(req,res){
-    res.header("Access-Control-Allow-Origin", "https://getajob-frontend.herokuapp.com");
+    res.header("Access-Control-Allow-Origin", originUrl);
     res.header("Access-Control-Allow-Credentials", true);
     res.header(
     "Access-Control-Allow-Headers",

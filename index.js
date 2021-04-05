@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRouter.js';
 import jobRouter from './routes/jobsRouter.js'
 import indexRouter from './routes/indexRouter.js'
+import originUrl from './routes/origin.js';
 
 // app config
 const app = express();
@@ -48,7 +49,7 @@ mongoose.connect(config.mongo_url,{
 
 // api routes
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://getajob-frontend.herokuapp.com");
+  res.header("Access-Control-Allow-Origin", originUrl);
   res.header("Access-Control-Allow-Credentials", true);
   res.header(
     "Access-Control-Allow-Headers",
