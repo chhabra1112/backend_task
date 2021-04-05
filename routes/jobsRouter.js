@@ -12,11 +12,12 @@ jobRouter.route('/')
     Jobs.find({hr:req.user._id})
     .then((jobs) => {
         res.statusCode = 200;
-        res.set({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": originUrl,
-            "Access-Control-Allow-Credentials":true
-        });
+        res.header("Access-Control-Allow-Origin", originUrl);
+        res.header("Access-Control-Allow-Credentials", true);
+        res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept"
+                );
         res.json(jobs);
 
     }, (err) => next(err))
