@@ -8,6 +8,12 @@ var userRouter = express.Router();
 
 
 userRouter.post('/register',function(req,res){
+    res.header("Access-Control-Allow-Origin", originUrl);
+        res.header("Access-Control-Allow-Credentials", true);
+        res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept"
+                );
     // taking a user
     const newuser=new User(req.body);
     

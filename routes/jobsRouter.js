@@ -8,16 +8,16 @@ import originUrl from './origin.js';
 var jobRouter = express.Router();
 jobRouter.route('/')
 .get(auth,function(req,res,next){
+    res.header("Access-Control-Allow-Origin", originUrl);
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept"
+                );
     if(req.user.recruiter){
     Jobs.find({hr:req.user._id})
     .then((jobs) => {
         res.statusCode = 200;
-        res.header("Access-Control-Allow-Origin", originUrl);
-        res.header("Access-Control-Allow-Credentials", true);
-        res.header(
-            "Access-Control-Allow-Headers",
-            "Origin, X-Requested-With, Content-Type, Accept"
-                );
         res.json(jobs);
 
     }, (err) => next(err))
@@ -81,16 +81,17 @@ jobRouter.post('/',auth,function(req,res,next){
 
 
 jobRouter.get('/applied',auth,(req,res,next)=>{
+    res.header("Access-Control-Allow-Origin", originUrl);
+        res.header("Access-Control-Allow-Credentials", true);
+        res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept"
+                );
     if(!req.user.recruiter){
             Applications.find({seeker:req.user._id})
             .populate('job_id')
                 .then((applications) => {
                         res.statusCode = 200;
-                        res.set({
-                            "Content-Type": "application/json",
-                            "Access-Control-Allow-Origin": originUrl,
-                            "Access-Control-Allow-Credentials":true
-                        });
                         res.json(applications);
                 }, (err) => next(err))
                 .catch((err) => next(err))
